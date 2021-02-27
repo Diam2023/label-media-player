@@ -1,0 +1,14 @@
+#add_action,#remove_action {
+    -fx-border-radius: 100px;
+    -fx-font-weight: bold;
+    -fx-background-color: #b4b4b4;
+    -fx-transition: 0.3s ease-in-out;
+}
+
+#add_action:hover,#remove_action:hover {
+    -fx-background-color: skyblue;
+}
+
+#media_player {
+    -fx-margin: 20px;
+}
