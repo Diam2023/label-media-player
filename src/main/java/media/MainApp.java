@@ -61,11 +61,11 @@ public class MainApp extends Application {
                     label = new Label(lmpdFile);
                 } else {
                     label = new Label(lmpdFile, System.getProperty("user.name"), sourceFileName);
-                    System.out.println("59:lmpd" + label);
+                    // System.out.println("59:lmpd" + label);
                     label.update();
                 }
             }
-            System.out.println(label.toString());
+            // System.out.println(label.toString());
             return true;
         }
         return false;

@@ -11,9 +11,9 @@ public class LabelDataStack implements LabelDataStackInterface {
      * 
      * @param initialLength: initial length
      */
-    void init(int initialLength) throws IllegalAccessException {
+    void init(int initialLength) {
         if (initialLength < 10 || initialLength > 100) {
-            throw new IllegalAccessException("bad length");
+            throw new ArrayIndexOutOfBoundsException("bed length!");
         }
         this.labelData = new LabelData[initialLength];
         this.size = 0;
@@ -35,13 +35,13 @@ public class LabelDataStack implements LabelDataStackInterface {
         center = null;
     }
 
-    public LabelDataStack() throws IllegalAccessException {
+    public LabelDataStack() {
         int initialLength = 10;
         init(initialLength);
 
     }
 
-    public LabelDataStack(int initialLength) throws IllegalAccessException {
+    public LabelDataStack(int initialLength) {
         init(initialLength);
     }
 
