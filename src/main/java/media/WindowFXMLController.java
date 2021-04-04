@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -13,12 +14,9 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -43,10 +41,10 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.util.Duration;
 import top.monoliths.util.label.LabelItem;
+import top.monoliths.util.label.LabelItemList;
 
 public class WindowFXMLController extends Application implements Initializable {
     private Stage stage;
@@ -62,7 +60,7 @@ public class WindowFXMLController extends Application implements Initializable {
 
     private top.monoliths.util.label.Label label;
 
-    // private String lmpdFile;
+    // private String lmpdFile
     private String sourceFile;
 
     private boolean isStoped = false;
@@ -126,13 +124,8 @@ public class WindowFXMLController extends Application implements Initializable {
                 flashViewDataToFileData();
             }
         } else {
-            // fileDataMenbers.add(new FileColumnItem("fileName", "filePath"));
-            if ((file = chooseFileDialog()) != null) {
-                if (MainApp.initialFile(file)) {
-                    // System.out.println(MainApp.sourceFileName);
-                    // System.out.println(MainApp.sourcePath);
-                    fileDataMenbers.add(new FileColumnItem(MainApp.sourceFileName, MainApp.sourcePath));
-                }
+            if ((file = chooseFileDialog()) != null && MainApp.initialFile(file)) {
+                fileDataMenbers.add(new FileColumnItem(MainApp.getSourceFile(), MainApp.getSourcePath()));
             }
         }
     }
@@ -154,7 +147,7 @@ public class WindowFXMLController extends Application implements Initializable {
 
     // media action
     @FXML
-    private void mediaPlayerStateChange(MouseEvent event) throws Exception {
+    private void mediaPlayerStateChange(MouseEvent event) {
         if (this.isStoped) {
             mediaPlayer.pause();
             this.isStoped = false;
@@ -166,24 +159,24 @@ public class WindowFXMLController extends Application implements Initializable {
 
     public void flashFileDataToViewData() {
         this.labelDataMembers.clear();
-        // System.out.println("flash f-v");
-        // System.out.println(this.label.labelData.labelBody);
-        for (int i = 0; i < this.label.labelData.labelBody.size(); i++) {
-            LabelItem now = this.label.labelData.labelBody.get(i);
+        LabelItemList labelBody = this.label.getLabelBody();
+        for (int i = 0; i < labelBody.size(); i++) {
+            LabelItem now = labelBody.getIndex(i);
             if (now != null) {
-                this.labelDataMembers.add(new LabelColumnItem(now.title, now.time, now.duration));
+                this.labelDataMembers.add(new LabelColumnItem(now.getTitle(), now.getTime(), now.getDuration()));
             }
         }
     }
 
     public void flashViewDataToFileData() {
-        // System.out.println("flash v-f");
-        this.label.labelData.labelBody.clear();
+        LabelItemList labelBody = this.label.getLabelBody();
+        labelBody.clear();
         for (int i = 0; i < this.labelDataMembers.size(); i++) {
-            this.label.write(new LabelItem(this.labelDataMembers.get(i).getTitle(),
-                    this.labelDataMembers.get(i).getTime(), this.labelDataMembers.get(i).getDuration()));
+            labelBody.add(new LabelItem(this.labelDataMembers.get(i).getTitle(),
+                    this.labelDataMembers.get(i).getDuration(), this.labelDataMembers.get(i).getTime()));
         }
-        this.label.update();
+        this.label.setLabelBody(labelBody);
+        this.label.flush();
     }
 
     // dialog action
@@ -197,10 +190,10 @@ public class WindowFXMLController extends Application implements Initializable {
     }
 
     public String chooseFileDialog() {
-        Stage stage = new Stage();
+        // Stage stage = new Stage()
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("open file with label media");
-        fileChooser.getExtensionFilters().addAll(new ExtensionFilter("media file", "*.mp3", "*.wav", "*.mp4", "*.mov"),
+        fileChooser.getExtensionFilters().addAll(new ExtensionFilter("media file", "*.mp3", "*.wav"),
                 new ExtensionFilter("all filee", "*.*"));
         File file = fileChooser.showOpenDialog(stage);
         return ((file != null) && file.exists() && file.isFile()) ? file.getAbsolutePath() : null;
@@ -209,8 +202,8 @@ public class WindowFXMLController extends Application implements Initializable {
     // initital
 
     public void initialLabel() {
-        // System.out.println(MainApp.lmpdFile);
-        label = new top.monoliths.util.label.Label(MainApp.lmpdFile);
+        // System.out.println(MainApp.lmpdFile)
+        label = new top.monoliths.util.label.Label(MainApp.getLmpdFile());
     }
 
     public void initialViewData() {
@@ -267,22 +260,14 @@ public class WindowFXMLController extends Application implements Initializable {
             return row;
         });
 
-        // labelView.setRowFactory(tv -> {
-        // TableRow<LabelColumnItem> row = new TableRow<>();
-        // row.setOnInputMethodTextChanged (event -> {
-        // flashViewDataToFileData();
-        // });
-        // return row;
-        // });
-
         fileView.setRowFactory(tv -> {
             TableRow<FileColumnItem> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if ((event.getClickCount() == 2) && (!row.isEmpty())) {
                     FileColumnItem rowData = row.getItem();
                     String[] path = { rowData.getPath() };
-                    MainApp.label = null;
-                    MainApp.lmpdFile = null;
+                    MainApp.setLabel(null);
+                    MainApp.setLmpdFile(null);
                     MainApp.initialPath(path);
                     tempFile();
                     initialLabel();
@@ -297,7 +282,6 @@ public class WindowFXMLController extends Application implements Initializable {
 
     public void initialMedia() {
         String source = getSourceFile();
-        System.out.println("source :" + source);
         File file = new File(source);
         Media media = new Media(file.toURI().toString());
         mediaPlayer = new MediaPlayer(media);
@@ -310,48 +294,67 @@ public class WindowFXMLController extends Application implements Initializable {
     }
 
     public void initialListener() {
-        duration_ctrl.setOnMouseReleased(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent e) {
-                double newTime = duration_ctrl.valueProperty().getValue() / 100
-                        * mediaPlayer.getTotalDuration().toMillis();
-                mediaPlayer.seek(new Duration(newTime));
-            }
-        });
+        // duration_ctrl.setOnMouseReleased(new EventHandler<MouseEvent>() {
+        // @Override
+        // public void handle(MouseEvent e) {
+        // double newTime = duration_ctrl.valueProperty().getValue() / 100
+        // * mediaPlayer.getTotalDuration().toMillis();
+        // mediaPlayer.seek(new Duration(newTime));
+        // }
+        // });
+
+        duration_ctrl.setOnMouseReleased((e -> {
+            double newTime = duration_ctrl.valueProperty().getValue() / 100 * mediaPlayer.getTotalDuration().toMillis();
+            mediaPlayer.seek(new Duration(newTime));
+        }));
+
         duration_ctrl.setOnMouseClicked((e -> {
             double newTime = duration_ctrl.valueProperty().getValue() / 100 * mediaPlayer.getTotalDuration().toMillis();
             mediaPlayer.seek(new Duration(newTime));
         }));
 
         // duration_ctrl.
-        mediaPlayer.currentTimeProperty().addListener(new ChangeListener<Duration>() {
-            @Override
-            public void changed(ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) {
-                duration_ctrl.setValue(newValue.toSeconds() / mediaPlayer.getTotalDuration().toSeconds() * 100);
-                duration_view
-                        .setText(durationToString(newValue) + "/" + durationToString(mediaPlayer.getTotalDuration()));
-            }
-        });
+        // mediaPlayer.currentTimeProperty().addListener(new ChangeListener<Duration>()
+        // {
+        // @Override
+        // public void changed(ObservableValue<? extends Duration> observable, Duration
+        // oldValue, Duration newValue) {
+        // duration_ctrl.setValue(newValue.toSeconds() /
+        // mediaPlayer.getTotalDuration().toSeconds() * 100);
+        // duration_view
+        // .setText(durationToString(newValue) + "/" +
+        // durationToString(mediaPlayer.getTotalDuration()));
+        // }
+        // });
+
+        mediaPlayer.currentTimeProperty().addListener(((observable, oldValue, newValue) -> {
+            duration_ctrl.setValue(newValue.toSeconds() / mediaPlayer.getTotalDuration().toSeconds() * 100);
+            duration_view.setText(durationToString(newValue) + "/" + durationToString(mediaPlayer.getTotalDuration()));
+        }));
 
         mediaPlayer.setVolume(0.7);
         voice_ctrl.setValue(mediaPlayer.getVolume());
 
-        voice_ctrl.valueProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                mediaPlayer.setVolume(newValue.doubleValue() / 100);
-            }
-        });
+        // voice_ctrl.valueProperty().addListener(new ChangeListener<Number>() {
+        // @Override
+        // public void changed(ObservableValue<? extends Number> observable, Number
+        // oldValue, Number newValue) {
+        // mediaPlayer.setVolume(newValue.doubleValue() / 100);
+        // }
+        // });
+
+        voice_ctrl.valueProperty()
+                .addListener((observable, oldValue, newValue) -> mediaPlayer.setVolume(newValue.doubleValue() / 100));
     }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // this.lmpdFile = MainApp.lmpdFile;
-        if (MainApp.lmpdFile == null) {
+        // this.lmpdFile = MainApp.lmpdFile
+        if (MainApp.getLmpdFile() == null) {
             String[] fl = { null };
             if ((fl[0] = chooseFileDialog()) != null) {
                 MainApp.initialPath(fl);
-                if (MainApp.lmpdFile != null) {
+                if (MainApp.getLmpdFile() != null) {
                     tempFile();
                 } else {
                     System.exit(0);
@@ -369,13 +372,11 @@ public class WindowFXMLController extends Application implements Initializable {
 
         initialListener();
 
-        fileDataMenbers.add(new FileColumnItem(MainApp.sourceFileName, MainApp.sourcePath));
+        fileDataMenbers.add(new FileColumnItem(MainApp.getSourceFile(), MainApp.getSourcePath()));
 
-        mediaPlayer.setOnReady(new Runnable() {
-            public void run() {
-                player_view.setFitWidth(minScreenWidth);
-                player_view.setFitHeight(minScreenHeight);
-            }
+        mediaPlayer.setOnReady(() -> {
+            player_view.setFitWidth(minScreenWidth);
+            player_view.setFitHeight(minScreenHeight);
         });
     }
 
@@ -388,19 +389,17 @@ public class WindowFXMLController extends Application implements Initializable {
     }
 
     public void tempFile() {
-        try {
-            File file = new File(getClass().getResource("/main/resources").toURI().getPath() + "/temp_data.data");
-            if (file.exists()) {
-                file.delete();
-            }
-            file.createNewFile();
-            DataOutputStream fileStream = new DataOutputStream(new FileOutputStream(file));
-            fileStream.writeUTF(MainApp.lmpdFile);
-            fileStream.writeUTF(MainApp.sourcePath);
-            fileStream.close();
-            // System.out.println("wfxtempFile:" + lmpdFile);
-        } catch (Exception e) {
+        try (DataOutputStream fileStream = new DataOutputStream(new FileOutputStream(
+                new File(getClass().getResource("/main/resources").toURI().getPath() + "/temp_data.data")))) {
+            fileStream.writeUTF(MainApp.getLmpdFile());
+            fileStream.writeUTF(MainApp.getSourceFile());
+            fileStream.flush();
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
+        } catch (URISyntaxException f) {
+            f.printStackTrace();
+        } catch (IOException g) {
+            g.printStackTrace();
         }
     }
 
@@ -411,19 +410,14 @@ public class WindowFXMLController extends Application implements Initializable {
     }
 
     public String getSourceFile() {
-        try {
-            File file = null;
-            try {
-                file = new File(getClass().getResource("/main/resources").toURI().getPath() + "/temp_data.data");
-                // System.out.println(file.toPath());
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
-            DataInputStream fileStream = new DataInputStream(new FileInputStream(file));
-            // this.lmpdFile = fileStream.readUTF();
+        try (DataInputStream fileStream = new DataInputStream(new FileInputStream(
+                new File(getClass().getResource("/main/resources").toURI().getPath() + "/temp_data.data")))) {
             fileStream.readUTF();
             this.sourceFile = fileStream.readUTF();
-            fileStream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (URISyntaxException f) {
+            f.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -432,7 +426,7 @@ public class WindowFXMLController extends Application implements Initializable {
 
     @Override
     public void start(Stage windowStage) throws Exception {
-        windowStage.setResizable(false);
+        windowStage.setResizable(true);
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(getClass().getResource("/main/resources/fxml/Window.fxml"));
         fxmlLoader.setBuilderFactory(new JavaFXBuilderFactory());

@@ -2,19 +2,45 @@ package main.java.media;
 
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
 import top.monoliths.util.label.Label;
 
 public class MainApp extends Application {
-    public static String lmpdFile;
-    public static String sourceFileName;
-    public static String sourcePath;
-    public static Label label;
-    public static String[] launchParameter;
+    private static String lmpdFile;
+    private static String sourceFile;
+    private static String sourcePath;
+    private static Label label;
+    private static String[] launchParameter;
+
+    public static void setLabel(Label label) {
+        MainApp.label = label;
+    }
+
+    public static Label getLabel() {
+        return label;
+    }
+
+    public static void setLmpdFile(String lmpdFile) {
+        MainApp.lmpdFile = lmpdFile;
+    }
+
+    public static String getSourceFile() {
+        return sourceFile;
+    }
+
+    public static String getSourcePath() {
+        return sourcePath;
+    }
+
+    public static String getLmpdFile() {
+        return lmpdFile;
+    }
 
     public static Label initialPath(String[] args) {
         if (args != null && args.length != 0) {
@@ -23,19 +49,17 @@ public class MainApp extends Application {
             label = null;
         }
         if (label != null) {
-            System.out.println(label);
-            lmpdFile = label.fileName;
-            sourceFileName = label.labelData.fileName;
+            lmpdFile = label.getLmpdFilePosition();
+            sourceFile = label.getSourceFilePosition();
         }
         return label;
     }
 
     public static boolean initialFile(String filePath) {
-        System.out.println(filePath);
         File file = new File(filePath);
         if (file.exists() && file.isFile()) {
             // fileName="name.last"
-            String fileName = new String(file.getName());
+            String fileName = file.getName();
 
             // name="name"
             String[] center = fileName.split("\\.");
@@ -49,43 +73,37 @@ public class MainApp extends Application {
                 // use lmpd file to start
                 lmpdFile = file.getPath();
                 label = new Label(lmpdFile);
-                sourceFileName = label.fileName;
-                sourcePath = file.getParent() + File.separator + label.labelData.fileName;
-                System.out.println("");
+                sourceFile = label.getFileName();
+                sourcePath = file.getParent() + File.separator + label.getFileName();
             } else {
                 lmpdFile = file.getParent() + File.separator + name + ".lmpd";
-                sourceFileName = fileName;
+                sourceFile = fileName;
                 sourcePath = file.getPath();
                 if (new File(lmpdFile).exists()) {
-                    System.out.println("exist lmpd" + lmpdFile);
                     label = new Label(lmpdFile);
                 } else {
-                    label = new Label(lmpdFile, System.getProperty("user.name"), sourceFileName);
-                    // System.out.println("59:lmpd" + label);
-                    label.update();
+                    label = new Label(lmpdFile, System.getProperty("user.name"), sourceFile);
+                    label.flush();
                 }
             }
-            // System.out.println(label.toString());
             return true;
         }
         return false;
     }
 
     public void tempFile() {
-        try {
-            File file = new File(getClass().getResource("/main/resources").toURI().getPath() + "/temp_data.data");
-            if (file.exists()) {
-                file.delete();
-            }
-            file.createNewFile();
-            DataOutputStream fileStream = new DataOutputStream(new FileOutputStream(file));
+        // File file
+        try (DataOutputStream fileStream = new DataOutputStream(new FileOutputStream(
+                new File(getClass().getResource("/main/resources").toURI().getPath() + "/temp_data.data")))) {
             fileStream.writeUTF(lmpdFile);
             fileStream.writeUTF(sourcePath);
-            fileStream.close();
-            System.out.println("tempFile:" + lmpdFile);
-            System.out.println("tempFile:" + sourcePath);
-        } catch (Exception e) {
+            fileStream.flush();
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
+        } catch (URISyntaxException f) {
+            f.printStackTrace();
+        } catch (IOException g) {
+            g.printStackTrace();
         }
     }
 
@@ -98,7 +116,7 @@ public class MainApp extends Application {
         initialWindow();
     }
 
-    public void initialWindow() throws IOException {
+    public void initialWindow() {
         WindowFXMLController window = new WindowFXMLController();
         try {
             window.showScreen();
