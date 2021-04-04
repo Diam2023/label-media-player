@@ -188,33 +188,33 @@ public class WindowFXMLController extends Application implements Initializable {
         label = new top.monoliths.util.label.Label(MainApp.getLmpdFile());
     }
 
+    @SuppressWarnings("all")
     public void initialViewData() {
-        this.initialFileData = List.of(new FileColumnItem("name", "path"));
-        this.fileDataMenbers = FXCollections.observableArrayList(this.initialFileData);
+        List<FileColumnItem> initialFileData;
+        List<LabelColumnItem> initialLabelData;
+        initialFileData = List.of(new FileColumnItem("name", "path"));
+        fileDataMenbers = FXCollections.observableArrayList(initialFileData);
         fileView = new TableView<>();
         fileView.setItems(fileDataMenbers);
         TableColumn<FileColumnItem, String> nameColumn = new TableColumn<>("name");
-        nameColumn
-                .setCellValueFactory(new PropertyValueFactory<>(this.initialFileData.get(0).nameProperty().getName()));
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>(initialFileData.get(0).nameProperty().getName()));
         TableColumn<FileColumnItem, String> pathColumn = new TableColumn<>("path");
-        pathColumn
-                .setCellValueFactory(new PropertyValueFactory<>(this.initialFileData.get(0).pathProperty().getName()));
+        pathColumn.setCellValueFactory(new PropertyValueFactory<>(initialFileData.get(0).pathProperty().getName()));
         this.fileDataMenbers.remove(0);
 
         fileView.getColumns().setAll(nameColumn, pathColumn);
 
         fileOption.setContent(fileView);
 
-        this.initialLabelData = List.of(new LabelColumnItem("title", "time", -1));
-        this.labelDataMembers = FXCollections.observableArrayList(this.initialLabelData);
+        initialLabelData = List.of(new LabelColumnItem("title", "time", -1));
+        this.labelDataMembers = FXCollections.observableArrayList(initialLabelData);
         labelView = new TableView<>();
         labelView.setItems(labelDataMembers);
         TableColumn<LabelColumnItem, String> titleColumn = new TableColumn<>("title");
-        titleColumn.setCellValueFactory(
-                new PropertyValueFactory<>(this.initialLabelData.get(0).titleProperty().getName()));
+        titleColumn.setCellValueFactory(new PropertyValueFactory<>(initialLabelData.get(0).titleProperty().getName()));
         TableColumn<LabelColumnItem, Long> durationColumn = new TableColumn<>("duration");
-        durationColumn.setCellValueFactory(
-                new PropertyValueFactory<>(this.initialLabelData.get(0).durationProperty().getName()));
+        durationColumn
+                .setCellValueFactory(new PropertyValueFactory<>(initialLabelData.get(0).durationProperty().getName()));
         this.labelDataMembers.remove(0);
 
         titleColumn.setEditable(true);
