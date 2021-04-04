@@ -91,7 +91,6 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        // initialFullScreen(stage);
         initialPath(launchParameter);
         if (lmpdFile != null) {
             tempFile();
