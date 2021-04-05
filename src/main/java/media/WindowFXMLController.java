@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -102,13 +103,13 @@ public class WindowFXMLController extends Application implements Initializable {
             if ((labelTitle = addLabelDialog()) != null) {
                 this.labelDataMembers
                         .add(new LabelColumnItem(labelTitle, top.monoliths.util.label.Label.nowTime(), nowDuration));
-                flashViewDataToFileData();
             }
         } else {
             if ((file = chooseFileDialog()) != null && MainApp.initialFile(file)) {
                 fileDataMenbers.add(new FileColumnItem(MainApp.getSourceFile(), MainApp.getSourcePath()));
             }
         }
+        flashViewDataToFileData();
     }
 
     @FXML
@@ -128,13 +129,13 @@ public class WindowFXMLController extends Application implements Initializable {
             // target
             if (!this.labelDataMembers.isEmpty()) {
                 this.labelDataMembers.remove(labelView.getSelectionModel().getFocusedIndex());
-                flashViewDataToFileData();
             }
         } else {
             if (!this.fileDataMenbers.isEmpty()) {
                 this.fileDataMenbers.remove(fileView.getSelectionModel().getFocusedIndex());
             }
         }
+        flashViewDataToFileData();
     }
 
     public void flashFileDataToViewData() {
@@ -188,9 +189,10 @@ public class WindowFXMLController extends Application implements Initializable {
 
     @SuppressWarnings("all")
     public void initialViewData() {
-        List<FileColumnItem> initialFileData;
-        List<LabelColumnItem> initialLabelData;
-        initialFileData = List.of(new FileColumnItem("name", "path"));
+        List<FileColumnItem> initialFileData = new ArrayList<>();
+        List<LabelColumnItem> initialLabelData = new ArrayList<>();
+        initialFileData.add(new FileColumnItem("name", "path"));
+
         fileDataMenbers = FXCollections.observableArrayList(initialFileData);
         fileView = new TableView<>();
         fileView.setItems(fileDataMenbers);
@@ -204,7 +206,7 @@ public class WindowFXMLController extends Application implements Initializable {
 
         fileOption.setContent(fileView);
 
-        initialLabelData = List.of(new LabelColumnItem("title", "time", -1));
+        initialLabelData.add(new LabelColumnItem("title", "time", -1));
         this.labelDataMembers = FXCollections.observableArrayList(initialLabelData);
         labelView = new TableView<>();
         labelView.setItems(labelDataMembers);
@@ -237,6 +239,7 @@ public class WindowFXMLController extends Application implements Initializable {
                     mediaPlayer.seek(new Duration(rowData.getDuration()));
                 }
             });
+            flashViewDataToFileData();
             return row;
         });
 
@@ -244,6 +247,8 @@ public class WindowFXMLController extends Application implements Initializable {
             TableRow<FileColumnItem> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if ((event.getClickCount() == 2) && (!row.isEmpty())) {
+                    label.flush();
+                    flashViewDataToFileData();
                     FileColumnItem rowData = row.getItem();
                     String[] path = { rowData.getPath() };
                     MainApp.setLabel(null);
