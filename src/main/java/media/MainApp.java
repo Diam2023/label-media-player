@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URISyntaxException;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -108,15 +107,13 @@ public class MainApp extends Application {
      */
     public void tempFile() {
         // File file
-        try (DataOutputStream fileStream = new DataOutputStream(new FileOutputStream(
-                new File(getClass().getResource("/main/resources").toURI().getPath() + "/temp_data.data")))) {
+        try (DataOutputStream fileStream = new DataOutputStream(
+                new FileOutputStream(new File(System.getProperty("user.dir") + File.separator + "temp_data.data")))) {
             fileStream.writeUTF(lmpdFile);
             fileStream.writeUTF(sourcePath);
             fileStream.flush();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-        } catch (URISyntaxException f) {
-            f.printStackTrace();
         } catch (IOException g) {
             g.printStackTrace();
         }

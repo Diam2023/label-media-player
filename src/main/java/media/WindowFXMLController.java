@@ -7,7 +7,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -339,15 +338,13 @@ public class WindowFXMLController extends Application implements Initializable {
     }
 
     public void tempFile() {
-        try (DataOutputStream fileStream = new DataOutputStream(new FileOutputStream(
-                new File(getClass().getResource("/main/resources").toURI().getPath() + "/temp_data.data")))) {
+        try (DataOutputStream fileStream = new DataOutputStream(
+                new FileOutputStream(new File(System.getProperty("user.dir") + File.separator + "temp_data.data")))) {
             fileStream.writeUTF(MainApp.getLmpdFile());
             fileStream.writeUTF(MainApp.getSourcePath());
             fileStream.flush();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-        } catch (URISyntaxException f) {
-            f.printStackTrace();
         } catch (IOException g) {
             g.printStackTrace();
         }
@@ -360,12 +357,10 @@ public class WindowFXMLController extends Application implements Initializable {
     }
 
     public String getSourceFile() {
-        try (DataInputStream fileStream = new DataInputStream(new FileInputStream(
-                new File(getClass().getResource("/main/resources").toURI().getPath() + "/temp_data.data")))) {
+        try (DataInputStream fileStream = new DataInputStream(
+                new FileInputStream(new File(System.getProperty("user.dir") + File.separator + "temp_data.data")))) {
             fileStream.readUTF();
             sourceFile = fileStream.readUTF();
-        } catch (URISyntaxException f) {
-            f.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

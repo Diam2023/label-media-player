@@ -8,14 +8,14 @@
             "type": "java",
             "name": "Launch App",
             "request": "launch",
-            "mainClass": "App",
-            // "args": "C:\\Users\\35691\\Videos\\2.lmpd",
-<<<<<<< HEAD
-            // "args": "C:\\Users\\35691\\Videos\\2.mp4",
-=======
-            // "args": "C:\\Users\\35691\\Videos\\84AC05741D92E71E4F7774505B44EDA2.mp4",
-            "projectName": "label_media_player-2.0_b3c31744"
->>>>>>> 8a15f70e14eb00c96d4ca458c709655fee29e469
+            "mainClass": "main.java.media.App",
+            "projectName": "label-media-player"
+        },
+        {
+            "type": "java",
+            "name": "Launch App",
+            "request": "launch",
+            "mainClass": "App"
         }
     ]
 }
