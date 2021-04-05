@@ -113,7 +113,7 @@ public class WindowFXMLController extends Application implements Initializable {
 
     @FXML
     private void pauseAction(ActionEvent event) {
-        if (isStoped) {
+        if (!isStoped) {
             mediaPlayer.pause();
             isStoped = true;
         } else {
@@ -173,8 +173,8 @@ public class WindowFXMLController extends Application implements Initializable {
         // Stage stage = new Stage()
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("open file with label media");
-        fileChooser.getExtensionFilters().addAll(new ExtensionFilter("media file", "*.mp3", "*.wav"),
-                new ExtensionFilter("all filee", "*.*"));
+        fileChooser.getExtensionFilters().addAll(new ExtensionFilter("all filee", "*.*"),
+                new ExtensionFilter("media file", "*.mp3", "*.lmpd"));
         File file = fileChooser.showOpenDialog(stage);
         return ((file != null) && file.exists() && file.isFile()) ? file.getAbsolutePath() : null;
     }

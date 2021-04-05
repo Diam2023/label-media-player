@@ -42,6 +42,12 @@ public class MainApp extends Application {
         return lmpdFile;
     }
 
+    /**
+     * new a Label inctance
+     * 
+     * @param args launch
+     * @return Label
+     */
     public static Label initialPath(String[] args) {
         if (args != null && args.length != 0) {
             initialFile(args[0]);
@@ -55,6 +61,12 @@ public class MainApp extends Application {
         return label;
     }
 
+    /**
+     * get file type to set lmpd and source
+     * 
+     * @param filePath lmpd file or media file
+     * @return if successful return true
+     */
     public static boolean initialFile(String filePath) {
         File file = new File(filePath);
         if (file.exists() && file.isFile()) {
@@ -91,6 +103,9 @@ public class MainApp extends Application {
         return false;
     }
 
+    /**
+     * to create a temp file to privide a data to windowFXMLContriller
+     */
     public void tempFile() {
         // File file
         try (DataOutputStream fileStream = new DataOutputStream(new FileOutputStream(
