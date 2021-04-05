@@ -73,8 +73,8 @@ public class MainApp extends Application {
                 // use lmpd file to start
                 lmpdFile = file.getPath();
                 label = new Label(lmpdFile);
-                sourceFile = label.getFileName();
-                sourcePath = file.getParent() + File.separator + label.getFileName();
+                sourceFile = label.getSourceName();
+                sourcePath = file.getParent() + File.separator + label.getSourceName();
             } else {
                 lmpdFile = file.getParent() + File.separator + name + ".lmpd";
                 sourceFile = fileName;

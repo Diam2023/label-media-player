@@ -124,7 +124,7 @@ public final class Label extends LabelData implements InterfaceLabel {
     public void readDataFromFile() {
         ObjectInputStream ois;
         try {
-            ois = new ObjectInputStream(new FileInputStream(new File(getFileName())));
+            ois = new ObjectInputStream(new FileInputStream(new File(getLmpdFilePosition())));
             readExternal(ois);
         } catch (ClassNotFoundException | IOException e) {
             e.printStackTrace();
@@ -137,7 +137,7 @@ public final class Label extends LabelData implements InterfaceLabel {
     @Override
     public void flush() {
         try {
-            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(new File(getFileName())));
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(new File(getLmpdFilePosition())));
             writeExternal(oos);
         } catch (IOException e) {
             e.printStackTrace();

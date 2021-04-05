@@ -9,7 +9,6 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
 <VBox prefHeight="770.0" prefWidth="540.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.media.WindowFXMLController">
    <children>
       <HBox opacity="0.8" prefHeight="41.0" prefWidth="921.0">
@@ -67,7 +66,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <Button maxWidth="1.7976931348623157E308" minWidth="100.0" mnemonicParsing="false" prefHeight="60.0" text="pause" HBox.hgrow="ALWAYS" />
+            <Button fx:id="pauseAction" maxWidth="1.7976931348623157E308" minWidth="100.0" mnemonicParsing="false" prefHeight="60.0" text="pause" HBox.hgrow="ALWAYS" />
             <Button fx:id="remove_action" alignment="CENTER" contentDisplay="CENTER" ellipsisString="" maxWidth="1.7976931348623157E308" minWidth="100.0" mnemonicParsing="false" onAction="#removeAction" prefHeight="76.0" text="remove" textAlignment="CENTER" textOverrun="WORD_ELLIPSIS" HBox.hgrow="ALWAYS" />
          </children>
       </HBox>

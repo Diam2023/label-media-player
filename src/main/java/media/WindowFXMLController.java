@@ -33,7 +33,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.FileChooser;
@@ -113,6 +112,17 @@ public class WindowFXMLController extends Application implements Initializable {
     }
 
     @FXML
+    private void pauseAction(ActionEvent event) {
+        if (isStoped) {
+            mediaPlayer.pause();
+            isStoped = true;
+        } else {
+            mediaPlayer.play();
+            isStoped = false;
+        }
+    }
+
+    @FXML
     private void removeAction(ActionEvent event) {
         if (labelOption.isSelected()) {
             // target
@@ -124,18 +134,6 @@ public class WindowFXMLController extends Application implements Initializable {
             if (!this.fileDataMenbers.isEmpty()) {
                 this.fileDataMenbers.remove(fileView.getSelectionModel().getFocusedIndex());
             }
-        }
-    }
-
-    // media action
-    @FXML
-    private void mediaPlayerStateChange(MouseEvent event) {
-        if (this.isStoped) {
-            mediaPlayer.pause();
-            this.isStoped = false;
-        } else {
-            mediaPlayer.play();
-            this.isStoped = true;
         }
     }
 
@@ -322,7 +320,9 @@ public class WindowFXMLController extends Application implements Initializable {
 
         initialListener();
 
-        fileDataMenbers.add(new FileColumnItem(MainApp.getSourceFile(), MainApp.getSourcePath()));
+        label.setSourceFilePosition(MainApp.getSourcePath());
+
+        fileDataMenbers.add(new FileColumnItem(label.getSourceName(), label.getSourceFilePosition()));
     }
 
     public String durationToString(Duration duration) {
@@ -337,7 +337,7 @@ public class WindowFXMLController extends Application implements Initializable {
         try (DataOutputStream fileStream = new DataOutputStream(new FileOutputStream(
                 new File(getClass().getResource("/main/resources").toURI().getPath() + "/temp_data.data")))) {
             fileStream.writeUTF(MainApp.getLmpdFile());
-            fileStream.writeUTF(MainApp.getSourceFile());
+            fileStream.writeUTF(MainApp.getSourcePath());
             fileStream.flush();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -358,15 +358,13 @@ public class WindowFXMLController extends Application implements Initializable {
         try (DataInputStream fileStream = new DataInputStream(new FileInputStream(
                 new File(getClass().getResource("/main/resources").toURI().getPath() + "/temp_data.data")))) {
             fileStream.readUTF();
-            this.sourceFile = fileStream.readUTF();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            sourceFile = fileStream.readUTF();
         } catch (URISyntaxException f) {
             f.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return this.sourceFile;
+        return sourceFile;
     }
 
     @Override
