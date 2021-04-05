@@ -1,24 +1,10 @@
-<<<<<<< HEAD
 #add_action:hover, #remove_action:hover, #pause_action:hover {
-=======
-#add_action,#remove_action {
->>>>>>> 8a15f70e14eb00c96d4ca458c709655fee29e469
     -fx-border-radius: 100px;
     -fx-font-weight: bold;
     -fx-background-color: #b4b4b4;
     -fx-transition: 0.3s ease-in-out;
 }
 
-<<<<<<< HEAD
 #add_action:hover, #remove_action:hover, #pause_action:hover {
     -fx-background-color: skyblue;
 }
-=======
-#add_action:hover,#remove_action:hover {
-    -fx-background-color: skyblue;
-}
-
-#media_player {
-    -fx-margin: 20px;
-}
->>>>>>> 8a15f70e14eb00c96d4ca458c709655fee29e469
