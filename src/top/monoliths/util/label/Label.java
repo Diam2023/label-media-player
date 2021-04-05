@@ -1,4 +1,5 @@
 package top.monoliths.util.label;
+<<<<<<< HEAD
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,6 +10,13 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
+=======
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+>>>>>>> 8a15f70e14eb00c96d4ca458c709655fee29e469
 import java.io.ObjectOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -20,6 +28,7 @@ import java.util.Date;
  * @since 2.0
  * @version 2.0
  */
+<<<<<<< HEAD
 public final class Label extends LabelData implements InterfaceLabel {
     private String sourceName;
 
@@ -60,6 +69,25 @@ public final class Label extends LabelData implements InterfaceLabel {
     }
 
     public Label() {
+=======
+public class Label extends AbstractLabel {
+    public LabelData labelData;
+    private LabelDataStack backLabelData;
+    private LabelDataStack frontLabelData;
+
+    public String fileName;
+
+    public void setSourceFileName(String fileName) {
+        labelData.fileName = fileName;
+    }
+
+    public static String nowTime() {
+        return (String) new SimpleDateFormat("yyy-MM-dd HH:mm:ss").format(new Date());
+    }
+
+    private void initialLabelData() {
+        labelData = new LabelData();
+>>>>>>> 8a15f70e14eb00c96d4ca458c709655fee29e469
     }
 
     /**
@@ -67,10 +95,15 @@ public final class Label extends LabelData implements InterfaceLabel {
      * 
      * @param fileName: lmpd fileFluter
      */
+<<<<<<< HEAD
     public Label(String lmpdFilePosotion) {
         setLmpdFilePosition(lmpdFilePosotion);
         File lmpdFile = new File(lmpdFilePosition);
         setFileName(lmpdFile.getName());
+=======
+    public Label(String fileName) {
+        this.fileName = fileName;
+>>>>>>> 8a15f70e14eb00c96d4ca458c709655fee29e469
         readDataFromFile();
     }
 
@@ -78,6 +111,7 @@ public final class Label extends LabelData implements InterfaceLabel {
      * create a new label media data file label media data file last name : .lmpd
      * 
      * @param fileName:           lmpd fileFluter
+<<<<<<< HEAD
      * @param author:             monoliths
      * @param sourceFilePosition: media file
      */
@@ -91,6 +125,17 @@ public final class Label extends LabelData implements InterfaceLabel {
         setAuthor(author);
         setCreateTime(nowTime());
         setLabelBody(new LabelItemList());
+=======
+     * @param author
+     * @param sourceFilePosition: media file
+     */
+    public Label(String lmpdFileName, String author, String sourceFilePosition) {
+        this.fileName = lmpdFileName;
+        initialLabelData();
+        this.labelData.author = author;
+        this.labelData.fileName = sourceFilePosition;
+        this.labelData.createTime = nowTime();
+>>>>>>> 8a15f70e14eb00c96d4ca458c709655fee29e469
         initialFile();
     }
 
@@ -98,6 +143,7 @@ public final class Label extends LabelData implements InterfaceLabel {
      * clear file
      */
     private void initialFile() {
+<<<<<<< HEAD
         File file = new File(getLmpdFilePosition());
         if (file.exists()) {
             try (FileWriter fw = new FileWriter(file)) {
@@ -114,12 +160,23 @@ public final class Label extends LabelData implements InterfaceLabel {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+=======
+        File file = new File(this.fileName);
+        if (file.exists()) {
+            file.delete();
+        }
+        try {
+            file.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+>>>>>>> 8a15f70e14eb00c96d4ca458c709655fee29e469
         }
     }
 
     /**
      * from file read data
      */
+<<<<<<< HEAD
     @Override
     public void readDataFromFile() {
         ObjectInputStream ois;
@@ -127,6 +184,19 @@ public final class Label extends LabelData implements InterfaceLabel {
             ois = new ObjectInputStream(new FileInputStream(new File(getLmpdFilePosition())));
             readExternal(ois);
         } catch (ClassNotFoundException | IOException e) {
+=======
+    private void readDataFromFile() {
+        ObjectInputStream ois;
+        try {
+            this.labelData = new LabelData();
+            ois = new ObjectInputStream(new FileInputStream(new File(this.fileName)));
+            try {
+                this.labelData.readExternal(ois);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        } catch (IOException e) {
+>>>>>>> 8a15f70e14eb00c96d4ca458c709655fee29e469
             e.printStackTrace();
         }
     }
@@ -134,17 +204,25 @@ public final class Label extends LabelData implements InterfaceLabel {
     /**
      * write data to file
      */
+<<<<<<< HEAD
     @Override
     public void flush() {
         try {
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(new File(getLmpdFilePosition())));
             writeExternal(oos);
+=======
+    public void update() {
+        try {
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(new File(this.fileName)));
+            this.labelData.writeExternal(oos);
+>>>>>>> 8a15f70e14eb00c96d4ca458c709655fee29e469
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     @Override
+<<<<<<< HEAD
     @SuppressWarnings("all")
     public String toString() {
         StringBuffer result = new StringBuffer();
@@ -182,4 +260,72 @@ public final class Label extends LabelData implements InterfaceLabel {
         super.readExternal(in);
     }
 
+=======
+    public LabelData read() {
+        return this.labelData;
+    }
+
+    @Override
+    public Object read(LabelDataRequestTypeEnum type) {
+        LabelData data = this.labelData;
+        Object result = null;
+        switch (type) {
+            case LABEL_DATA:
+                result = data;
+                break;
+            case OBJECT:
+                result = (Object)data;
+                break;
+            default:
+                break;
+        }
+        return result;
+    }
+
+    @Override
+    public void write(LabelItem labelItem) {
+        this.labelData.labelBody.put(labelItem);
+    }
+
+    @Override
+    public void erase(LabelItem labelItem) throws IllegalAccessException {
+        this.erase(this.labelData.labelBody.indexOf(labelItem));
+    }
+
+    @Override
+    public void erase(int index) throws IllegalAccessException {
+        labelData.labelBody.erase(index);
+    }
+
+    @Override
+    public void next() throws IllegalAccessException {
+        if (frontLabelData.empty()) {
+            throw new IllegalAccessException("front none!");
+        }
+        this.backLabelData.push(this.labelData);
+        this.labelData = this.frontLabelData.top();
+        this.frontLabelData.pop();
+    }
+
+    @Override
+    public void back() throws IllegalAccessException {
+        if (backLabelData.empty()) {
+            throw new IllegalAccessException("back none!");
+        }
+        this.frontLabelData.push(this.labelData);
+        this.labelData = this.backLabelData.top();
+        this.backLabelData.pop();
+    }
+
+    @Override
+    public String toString() {
+        StringBuffer result = new StringBuffer();
+        result.append("file path:");
+        result.append(this.fileName);
+        result.append("\r\n");
+        result.append(this.labelData.toString());
+        return result.toString();
+    }
+    
+>>>>>>> 8a15f70e14eb00c96d4ca458c709655fee29e469
 }
