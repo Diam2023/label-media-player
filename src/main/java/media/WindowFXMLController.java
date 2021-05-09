@@ -61,35 +61,13 @@ public class WindowFXMLController extends Application implements Initializable {
     private MediaPlayer mediaPlayer;
 
     @FXML
-    private Button add_action;
-
+    private Button add_action, full_screen;
     @FXML
-    private Label file_name;
-
+    private Label file_name, duration_view;
     @FXML
-    private Label duration_view;
-
+    private Tab label_view, file_view, labelOption, fileOption;
     @FXML
-    private Tab label_view;
-
-    @FXML
-    private Tab file_view;
-
-    @FXML
-    private Tab labelOption;
-
-    @FXML
-    private Tab fileOption;
-
-    @FXML
-    private Button full_screen;
-
-    @FXML
-    private Slider voice_ctrl;
-
-    @FXML
-    private Slider duration_ctrl;
-
+    private Slider voice_ctrl, duration_ctrl;
     // action
     @FXML
     private void addAction(ActionEvent event) {
