@@ -3,10 +3,27 @@ package main.java.media;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
+/**
+ * file view data structure
+ * 
+ * @author monoliths
+ * @version 1.0
+ */
 public class FileColumnItem {
+    /**
+     * file's name
+     */
     private StringProperty name;
+    /**
+     * file's origin path
+     */
     private StringProperty path;
 
+    /**
+     * to initial File view data
+     * @param name file's name
+     * @param path file's path
+     */
     public FileColumnItem(String name, String path) {
         setName(name);
         setPath(path);

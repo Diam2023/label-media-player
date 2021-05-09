@@ -42,22 +42,57 @@ import javafx.util.Duration;
 import top.monoliths.util.label.LabelItem;
 import top.monoliths.util.label.LabelItemList;
 
+/**
+ * initial ui
+ * 
+ * @author monoliths
+ * @version 1.0
+ */
 public class WindowFXMLController extends Application implements Initializable {
+
+    /**
+     * window stage
+     */
     private Stage stage;
 
+    /**
+     * file data view
+     */
     private ObservableList<FileColumnItem> fileDataMenbers;
+
+    /**
+     * label data view
+     */
     private ObservableList<LabelColumnItem> labelDataMembers;
 
+    /**
+     * file view of ui
+     */
     private TableView<FileColumnItem> fileView;
+
+    /**
+     * file view of ui
+     */
     private TableView<LabelColumnItem> labelView;
 
+    /**
+     * label file and data
+     */
     private top.monoliths.util.label.Label label;
 
-    // private String lmpdFile
+    /**
+     * media file
+     */
     private String sourceFile;
 
+    /**
+     * tag of view player
+     */
     private boolean isStoped = false;
 
+    /**
+     * media player
+     */
     private MediaPlayer mediaPlayer;
 
     @FXML
@@ -68,8 +103,12 @@ public class WindowFXMLController extends Application implements Initializable {
     private Tab label_view, file_view, labelOption, fileOption;
     @FXML
     private Slider voice_ctrl, duration_ctrl;
-    // action
+
     @FXML
+    /**
+     * adapter file add and label add
+     * @param event
+     */
     private void addAction(ActionEvent event) {
         // file action
         String file;
@@ -90,6 +129,10 @@ public class WindowFXMLController extends Application implements Initializable {
     }
 
     @FXML
+    /**
+     * tag of media player state
+     * @param event
+     */
     private void pauseAction(ActionEvent event) {
         if (!isStoped) {
             mediaPlayer.pause();
@@ -101,6 +144,10 @@ public class WindowFXMLController extends Application implements Initializable {
     }
 
     @FXML
+    /**
+     * remove file or label data
+     * @param event
+     */
     private void removeAction(ActionEvent event) {
         if (labelOption.isSelected()) {
             // target
@@ -115,6 +162,9 @@ public class WindowFXMLController extends Application implements Initializable {
         flashViewDataToFileData();
     }
 
+    /**
+     * push file data to view
+     */
     public void flashFileDataToViewData() {
         this.labelDataMembers.clear();
         LabelItemList labelBody = this.label.getLabelBody();
@@ -126,6 +176,9 @@ public class WindowFXMLController extends Application implements Initializable {
         }
     }
 
+    /**
+     * write data to file
+     */
     public void flashViewDataToFileData() {
         LabelItemList labelBody = this.label.getLabelBody();
         labelBody.clear();
@@ -137,7 +190,10 @@ public class WindowFXMLController extends Application implements Initializable {
         this.label.flush();
     }
 
-    // dialog action
+    /**
+     * show add label view
+     * @return label name
+     */
     public String addLabelDialog() {
         TextInputDialog tid = new TextInputDialog();
         tid.setTitle("label");
@@ -147,6 +203,10 @@ public class WindowFXMLController extends Application implements Initializable {
         return result.isPresent() ? result.get() : null;
     }
 
+    /**
+     * show file chooser view
+     * @return file path
+     */
     public String chooseFileDialog() {
         // Stage stage = new Stage()
         FileChooser fileChooser = new FileChooser();
@@ -158,13 +218,12 @@ public class WindowFXMLController extends Application implements Initializable {
     }
 
     // initital
-
     public void initialLabel() {
         // System.out.println(MainApp.lmpdFile)
         label = new top.monoliths.util.label.Label(MainApp.getLmpdFile());
     }
 
-    @SuppressWarnings("all")
+    @SuppressWarnings("unchecked")
     public void initialViewData() {
         List<FileColumnItem> initialFileData = new ArrayList<>();
         List<LabelColumnItem> initialLabelData = new ArrayList<>();
@@ -208,6 +267,9 @@ public class WindowFXMLController extends Application implements Initializable {
         labelView.getSelectionModel().selectFirst();
         fileView.getSelectionModel().selectFirst();
 
+        /**
+         * cleck skip to label duration
+         */
         labelView.setRowFactory(tv -> {
             TableRow<LabelColumnItem> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
@@ -220,6 +282,9 @@ public class WindowFXMLController extends Application implements Initializable {
             return row;
         });
 
+        /**
+         * cleck to switch media file
+         */
         fileView.setRowFactory(tv -> {
             TableRow<FileColumnItem> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
@@ -242,6 +307,9 @@ public class WindowFXMLController extends Application implements Initializable {
         });
     }
 
+    /**
+     * initial media player
+     */
     public void initialMedia() {
         String source = getSourceFile();
         File file = new File(source);
@@ -254,6 +322,9 @@ public class WindowFXMLController extends Application implements Initializable {
         duration_view.setText(mediaPlayer.getCycleDuration().toMinutes() + "/");
     }
 
+    /**
+     * to ctrl duration
+     */
     public void initialListener() {
         duration_ctrl.setOnMouseReleased((e -> {
             double newTime = duration_ctrl.valueProperty().getValue() / 100 * mediaPlayer.getTotalDuration().toMillis();
@@ -278,6 +349,9 @@ public class WindowFXMLController extends Application implements Initializable {
     }
 
     @Override
+    /**
+     * main initial window
+     */
     public void initialize(URL url, ResourceBundle rb) {
         // this.lmpdFile = MainApp.lmpdFile
         if (MainApp.getLmpdFile() == null) {
@@ -307,6 +381,11 @@ public class WindowFXMLController extends Application implements Initializable {
         fileDataMenbers.add(new FileColumnItem(label.getSourceName(), label.getSourceFilePosition()));
     }
 
+    /**
+     * format duration to type String
+     * @param duration
+     * @return
+     */
     public String durationToString(Duration duration) {
         int time = (int) duration.toSeconds();
         int hour = time / 3600;
@@ -315,6 +394,9 @@ public class WindowFXMLController extends Application implements Initializable {
         return hour + ":" + minute + ":" + second;
     }
 
+    /**
+     * initial temp file
+     */
     public void tempFile() {
         try (DataOutputStream fileStream = new DataOutputStream(
                 new FileOutputStream(new File(System.getProperty("user.dir") + File.separator + "temp_data.data")))) {
@@ -334,6 +416,10 @@ public class WindowFXMLController extends Application implements Initializable {
         start(this.stage);
     }
 
+    /**
+     * get media file path from temp_data.data file
+     * @return media file path
+     */
     public String getSourceFile() {
         try (DataInputStream fileStream = new DataInputStream(
                 new FileInputStream(new File(System.getProperty("user.dir") + File.separator + "temp_data.data")))) {
@@ -346,6 +432,9 @@ public class WindowFXMLController extends Application implements Initializable {
     }
 
     @Override
+    /**
+     * load fxml file and css file
+     */
     public void start(Stage windowStage) throws Exception {
         windowStage.setResizable(true);
         FXMLLoader fxmlLoader = new FXMLLoader();

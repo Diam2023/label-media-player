@@ -18,20 +18,40 @@ public class LabelItemList implements Collection<LabelItem>, Serializable {
      */
     private static final long serialVersionUID = 1L;
 
+    /**
+     * define capacity
+     */
     private static final int DEFAULT_CAPACITY = 10;
 
+    /**
+     * list item number
+     */
     private int size;
+
+    /**
+     * main data
+     */
     private LabelItem[] labelItems;
 
+    /**
+     * to initial
+     */
     public LabelItemList() {
         initital();
     }
 
+    /**
+     * initial size and adata
+     */
     public void initital() {
         labelItems = new LabelItem[DEFAULT_CAPACITY];
         this.size = 0;
     }
 
+    /**
+     * encrease capacity
+     * @param capacity number
+     */
     public void ensureCapacity(int capacity) {
         if (capacity >= size() && labelItems != null) {
             LabelItem[] old = labelItems;
@@ -41,9 +61,11 @@ public class LabelItemList implements Collection<LabelItem>, Serializable {
                 labelItems[i++] = labelItem;
             }
         }
-
     }
 
+    /**
+     * from index get array element
+     */
     public LabelItem getIndex(int index) {
         return labelItems[index];
     }
@@ -217,7 +239,6 @@ public class LabelItemList implements Collection<LabelItem>, Serializable {
     }
 
     @Override
-    @SuppressWarnings("all")
     public String toString() {
         StringBuffer result = new StringBuffer();
         if (isEmpty()) {

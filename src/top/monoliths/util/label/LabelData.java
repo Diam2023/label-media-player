@@ -5,6 +5,12 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+/**
+ * LabelData
+ * 
+ * @author monoliths
+ * @version 1.0
+ */
 public class LabelData implements Externalizable {
     private String fileName;
     private String author;

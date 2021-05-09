@@ -5,11 +5,36 @@ import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
+/**
+ * label view data structure
+ * 
+ * @author monoliths
+ * @version 1.0
+ */
 public class LabelColumnItem {
+
+    /**
+     * label name
+     */
     private StringProperty title;
+
+    /**
+     * create label's name
+     */
     private String time;
+
+    /**
+     * log duration
+     */
     private LongProperty duration;
 
+    /**
+     * to initial LabelData
+     * 
+     * @param title
+     * @param time
+     * @param duration
+     */
     public LabelColumnItem(String title, String time, long duration) {
         setTitle(title);
         setTime(time);

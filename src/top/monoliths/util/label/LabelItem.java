@@ -9,6 +9,8 @@ import java.lang.annotation.Target;
 
 @LabelItemAnnotation
 /**
+ * LabelItem
+ * 
  * @author monoliths
  * @since 1.0
  * @version 1.0
@@ -21,13 +23,34 @@ public final class LabelItem implements Comparable<LabelItem>, Serializable {
      */
     private static final long serialVersionUID = 1L;
 
+    /**
+     * label's name
+     */
     private String title;
+
+    /**
+     * label's duration
+     */
     private Long duration;
+
+    /**
+     * label's create date
+     */
     private String time;
 
+    /**
+     * null construction
+     * keep to can be serializable
+     */
     public LabelItem() {
     }
 
+    /**
+     * initial Label Item
+     * @param title
+     * @param duration
+     * @param time
+     */
     public LabelItem(String title, Long duration, String time) {
         setTitle(title);
         setDuration(duration);
@@ -59,6 +82,9 @@ public final class LabelItem implements Comparable<LabelItem>, Serializable {
     }
 
     @Override
+    /**
+     * use Duration to compare
+     */
     public int compareTo(LabelItem o) {
         if (o.getDuration().equals(getDuration())) {
             return 0;

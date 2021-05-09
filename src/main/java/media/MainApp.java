@@ -10,6 +10,12 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import top.monoliths.util.label.Label;
 
+/**
+ * main program status
+ * 
+ * @author monoliths
+ * @version 1.0
+ */
 public class MainApp extends Application {
     private static String lmpdFile;
     private static String sourceFile;
